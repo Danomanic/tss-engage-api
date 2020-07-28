@@ -1,7 +1,3 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
-
-// <TokensSnippet>
 module.exports = {
   getAccessToken: async function(req) {
     if (req.user) {
@@ -24,4 +20,3 @@ module.exports = {
     }
   }
 };
-// </TokensSnippet>
