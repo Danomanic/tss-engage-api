@@ -8,9 +8,9 @@ router.get('/login',
       {
         response: res,
         prompt: 'login',
-        failureRedirect: '/',
+        failureRedirect: '/auth/authenticated',
         failureFlash: true,
-        successRedirect: '/'
+        successRedirect: '/auth/authenticated'
       }
     )(req,res,next);
   }
@@ -21,7 +21,7 @@ router.post('/callback',
     passport.authenticate('azuread-openidconnect',
       {
         response: res,
-        failureRedirect: '/',
+        failureRedirect: '/auth/authenticated',
         failureFlash: true,
         successRedirect: '/auth/authenticated'
       }

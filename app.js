@@ -1,10 +1,10 @@
 const createError = require('http-errors');
 const express = require('express');
-const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const session = require('express-session');
 const flash = require('connect-flash');
+const mongoose = require('mongoose');
 require('dotenv').config();
 
 const passport = require('passport');
@@ -13,19 +13,22 @@ const SimpleOAuth2 = require('simple-oauth2');
 
 const authRouter = require('./routes/auth');
 
+const User = require('./models/user');
+
 const graph = require('./graph');
 
 const app = express();
 
-const users = {};
+mongoose.connect('mongodb://localhost/passport');
 
-passport.serializeUser((user, done) => {
-  users[user.profile.oid] = user;
-  done(null, user.profile.oid);
+passport.serializeUser(function (user, done) {
+  done(null, user.id);
 });
 
-passport.deserializeUser((id, done) => {
-  done(null, users[id]);
+passport.deserializeUser(function (id, done) {
+  User.findById(id, function (err, user) {
+    done(err, user);
+  });
 });
 
 const oauth2 = SimpleOAuth2.create({
@@ -58,8 +61,19 @@ async function signInComplete(iss, sub, profile, accessToken, refreshToken, para
 
   const oauthToken = oauth2.accessToken.create(params);
 
-  users[profile.oid] = { profile, oauthToken };
-  return done(null, users[profile.oid]);
+  const updates = { oid: profile.oid, oauthToken, email: profile.email, name: profile.displayName };
+
+  const options = {
+    upsert: true
+  };
+
+  User.findOneAndUpdate({ oid: profile.oid }, updates, options, function (err, user) {
+    if (err) {
+      return done(err);
+    } else {
+      return done(null, user);
+    }
+  });
 }
 
 passport.use(new OIDCStrategy(
@@ -79,7 +93,7 @@ passport.use(new OIDCStrategy(
 ));
 
 app.use(session({
-  secret: 'your_secret_value_here',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   unset: 'destroy',

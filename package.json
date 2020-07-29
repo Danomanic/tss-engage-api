@@ -17,6 +17,7 @@
     "http-errors": "^1.7.3",
     "isomorphic-fetch": "^2.2.1",
     "moment": "^2.25.3",
+    "mongoose": "^5.9.26",
     "morgan": "^1.10.0",
     "passport": "^0.4.1",
     "passport-azure-ad": "^4.2.1",
