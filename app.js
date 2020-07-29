@@ -68,13 +68,14 @@ async function signInComplete(iss, sub, profile, accessToken, refreshToken, para
     oid: profile.oid, 
     oauthToken,
     email: profile.email, 
-    name: profile.displayName
+    name: profile.displayName,
   };
 
   const options = {
     upsert: true
   };
 
+  // DOUBLE LOGIN BUG... NEEDS TO BE FIND ONE AND CREATE...
   User.findOneAndUpdate({ oid: profile.oid }, updates, options, function (err, user) {
     if (err) {
       return done(err);
@@ -148,7 +149,8 @@ app.use((err, req, res) => {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  console.log(err);
+  res.send(err);
 });
 
 module.exports = app;
