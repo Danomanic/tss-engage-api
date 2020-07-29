@@ -1,16 +1,17 @@
-var express = require('express');
-var passport = require('passport');
-var router = express.Router();
+const express = require('express');
+const passport = require('passport');
+const router = express.Router();
+require('dotenv').config();
 
-router.get('/login',
+
+router.post('/login',
   function  (req, res, next) {
     passport.authenticate('azuread-openidconnect',
       {
         response: res,
-        prompt: 'login',
-        failureRedirect: '/auth/authenticated',
+        failureRedirect: process.env.FRONTEND_LOGIN_FAILURE,
         failureFlash: true,
-        successRedirect: '/auth/authenticated'
+        successRedirect: `${process.env.FRONTEND_LOGIN_FAILURE}&token=${req.body.id_token}`,
       }
     )(req,res,next);
   }
@@ -21,9 +22,9 @@ router.post('/callback',
     passport.authenticate('azuread-openidconnect',
       {
         response: res,
-        failureRedirect: '/auth/authenticated',
+        failureRedirect: process.env.FRONTEND_LOGIN_FAILURE,
         failureFlash: true,
-        successRedirect: '/auth/authenticated'
+        successRedirect: `${process.env.FRONTEND_LOGIN_FAILURE}&token=${req.body.id_token}`,
       }
     )(req,res,next);
   }

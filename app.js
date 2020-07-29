@@ -5,6 +5,7 @@ const logger = require('morgan');
 const session = require('express-session');
 const flash = require('connect-flash');
 const mongoose = require('mongoose');
+const cors = require('cors');
 require('dotenv').config();
 
 const passport = require('passport');
@@ -18,6 +19,8 @@ const User = require('./models/user');
 const graph = require('./graph');
 
 const app = express();
+
+app.use(cors());
 
 mongoose.connect('mongodb://localhost/passport');
 
@@ -61,7 +64,12 @@ async function signInComplete(iss, sub, profile, accessToken, refreshToken, para
 
   const oauthToken = oauth2.accessToken.create(params);
 
-  const updates = { oid: profile.oid, oauthToken, email: profile.email, name: profile.displayName };
+  const updates = { 
+    oid: profile.oid, 
+    oauthToken,
+    email: profile.email, 
+    name: profile.displayName
+  };
 
   const options = {
     upsert: true
