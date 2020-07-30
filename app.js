@@ -75,14 +75,14 @@ async function signInComplete(iss, sub, profile, accessToken, refreshToken, para
     upsert: true
   };
 
-  // DOUBLE LOGIN BUG... NEEDS TO BE FIND ONE AND CREATE...
-  User.findOneAndUpdate({ oid: profile.oid }, updates, options, function (err, user) {
+  const user = await User.findOneAndUpdate({ oid: profile.oid }, updates, options, function (err, user) {
     if (err) {
       return done(err);
-    } else {
-      return done(null, user);
     }
   });
+
+  return done(null, user);
+
 }
 
 passport.use(new OIDCStrategy(
