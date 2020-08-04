@@ -6,6 +6,7 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const moment = require('moment');
 require('dotenv').config();
 
 const passport = require('passport');
@@ -118,7 +119,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(logger('dev'));
+app.use(logger('combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -149,7 +150,8 @@ app.use((err, req, res) => {
 
   // render the error page
   res.status(err.status || 500);
-  console.log(err);
+  const time = moment().format();
+  console.log(`${time}: ${err}`);
   res.send(err);
 });
 
