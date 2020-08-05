@@ -70,6 +70,7 @@ async function signInComplete(iss, sub, profile, accessToken, refreshToken, para
     oauthToken,
     email: profile.email, 
     name: profile.displayName,
+    lastlogin: moment().format(),
   };
 
   const options = {

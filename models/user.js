@@ -8,6 +8,7 @@ var User = new Schema({
   oauthToken: Object,
   email: String,
   name: String,
+  lastlogin: Date,
 });
 
 
